@@ -1,18 +1,19 @@
 
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Check, LoaderCircle, Sparkles } from 'lucide-react';
+import { ArrowLeft, Check, LoaderCircle, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import CoinPackCard from '@/components/CoinPackCard';
 import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 
 const COIN_PACKS = [
-  { coins: 70, price: 0.99 },
-  { coins: 350, price: 4.99 },
-  { coins: 700, price: 9.99 },
-  { coins: 1400, price: 19.99 },
-  { coins: 3500, price: 49.99 },
-  { coins: 7000, price: 99.99 },
+  { coins: 130, price: 2.49 },
+  { coins: 199, price: 3.49 },
+  { coins: 330, price: 5.99 },
+  { coins: 400, price: 6.99 },
+  { coins: 600, price: 10.99 },
+  { coins: 725, price: 12.99 },
+  { coins: 1120, price: 19.99 },
 ];
 
 const Recharge = () => {
@@ -21,79 +22,108 @@ const Recharge = () => {
   const { toast } = useToast();
   const [selectedPack, setSelectedPack] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [currentCoins, setCurrentCoins] = useState(0);
 
   const handlePurchase = () => {
     if (selectedPack !== null) {
       setIsProcessing(true);
-      const pack = COIN_PACKS[selectedPack];
       
-      // Simulate payment processing
       setTimeout(() => {
         setIsProcessing(false);
+        setCurrentCoins(prev => prev + COIN_PACKS[selectedPack].coins);
         toast({
-          title: "Purchase Successful! 🎉",
-          description: (
-            <div className="flex items-center gap-2">
-              <span>{pack.coins.toLocaleString()} coins have been sent to @{username}</span>
-              <Sparkles className="w-4 h-4 text-yellow-400 animate-pulse" />
-            </div>
+          title: "Achat terminé",
+          description: "Accéde à la page « Obtenir des Pièces » d'un seul geste du doigt",
+          action: (
+            <Button variant="outline" size="sm" onClick={() => {}}>
+              Ajouter à l'écran d'accueil
+            </Button>
           ),
-          duration: 3000,
         });
-        setTimeout(() => navigate('/'), 3000);
       }, 2000);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
+    <div className="min-h-screen bg-white pb-20">
+      {/* Header */}
+      <div className="sticky top-0 bg-white border-b z-10">
+        <div className="flex items-center justify-between px-4 py-3">
+          <button onClick={() => navigate(-1)} className="p-1">
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-lg font-semibold">Recharger</h1>
+          <div className="w-6" /> {/* Spacer for alignment */}
+        </div>
+      </div>
+
+      {/* Current Balance */}
+      <div className="px-4 py-6 text-center">
+        <p className="text-sm text-gray-600 mb-2">Solde en pièces</p>
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="w-6 h-6 rounded-full bg-[#FFD700] flex items-center justify-center">
+            <span className="text-white text-sm">₮</span>
+          </div>
+          <span className="text-3xl font-bold">{currentCoins}</span>
+        </div>
+      </div>
+
+      {/* Coin Packs */}
+      <div className="px-4">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold mb-2">Échange</h2>
+          <p className="text-sm text-gray-500">Échanger les revenus des Cadeaux contre des Pièces</p>
+          <p className="text-xs text-gray-400">Des revenus des Cadeaux : $2.08 = €2.05(✨ 173)</p>
+        </div>
+
+        <div className="space-y-3">
+          {COIN_PACKS.map((pack, index) => (
+            <button
+              key={index}
+              onClick={() => setSelectedPack(index)}
+              className={cn(
+                "w-full flex items-center justify-between p-3 rounded-lg border transition-all",
+                selectedPack === index 
+                  ? "border-[#FE2C55] bg-red-50"
+                  : "border-gray-200 hover:border-gray-300"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-[#FFD700] flex items-center justify-center">
+                  <span className="text-white text-xs">₮</span>
+                </div>
+                <span className="font-medium">{pack.coins} pièces</span>
+              </div>
+              <span className="text-[#FE2C55] font-medium">{pack.price.toFixed(2)} €</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Payment Processing Modal */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 animate-scaleIn">
-            <LoaderCircle className="w-12 h-12 text-tiktok-pink animate-spin" />
-            <p className="text-lg font-medium">Processing payment...</p>
+            <LoaderCircle className="w-12 h-12 text-[#FE2C55] animate-spin" />
+            <p className="text-lg font-medium">Paiement sécurisé...</p>
           </div>
         </div>
       )}
 
-      <div className="max-w-md mx-auto">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center text-gray-500 hover:text-gray-700 mb-6"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
-        </button>
-
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Select Coin Package</h1>
-          <p className="text-gray-500">Sending to @{username}</p>
-        </div>
-
-        <div className="space-y-4 mb-8">
-          {COIN_PACKS.map((pack, index) => (
-            <CoinPackCard
-              key={index}
-              coins={pack.coins}
-              price={pack.price}
-              selected={selectedPack === index}
-              onSelect={() => setSelectedPack(index)}
-            />
-          ))}
-        </div>
-
+      {/* Bottom Fixed Button */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button
           onClick={handlePurchase}
           disabled={selectedPack === null || isProcessing}
-          className="w-full bg-tiktok-pink hover:bg-tiktok-pink/90 text-white h-12 text-lg relative overflow-hidden transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full bg-[#FE2C55] hover:bg-[#FE2C55]/90 text-white h-12"
         >
           {selectedPack !== null ? (
             <>
-              Pay ${COIN_PACKS[selectedPack].price.toFixed(2)}
-              <Check className="ml-2 w-5 h-5" />
+              <CreditCard className="w-5 h-5 mr-2" />
+              Payer {COIN_PACKS[selectedPack].price.toFixed(2)} €
             </>
           ) : (
-            'Select a package'
+            'Sélectionner un pack'
           )}
         </Button>
       </div>
