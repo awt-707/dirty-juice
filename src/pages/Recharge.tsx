@@ -25,7 +25,7 @@ const Recharge = () => {
     if (selectedPack !== null) {
       const pack = COIN_PACKS[selectedPack];
       toast({
-        title: "Purchase Successful!",
+        title: "Purchase Successful! 🎉",
         description: `${pack.coins.toLocaleString()} coins have been sent to @${username}`,
         duration: 3000,
       });
@@ -34,19 +34,21 @@ const Recharge = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-tiktok-bg-light py-8 px-4">
       <div className="max-w-md mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center text-gray-500 hover:text-gray-700 mb-6"
+          className="flex items-center text-tiktok-text-secondary hover:text-tiktok-pink mb-8 transition-colors duration-200"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back
         </button>
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Select Coin Package</h1>
-          <p className="text-gray-500">Sending to @{username}</p>
+        <div className="text-center mb-8 space-y-3">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-tiktok-pink to-purple-500 text-transparent bg-clip-text">
+            Select Coin Package
+          </h1>
+          <p className="text-tiktok-text-secondary">Sending to @{username}</p>
         </div>
 
         <div className="space-y-4 mb-8">
@@ -64,7 +66,12 @@ const Recharge = () => {
         <Button
           onClick={handlePurchase}
           disabled={selectedPack === null}
-          className="w-full bg-tiktok-pink hover:bg-tiktok-pink/90 text-white h-12 text-lg"
+          className={cn(
+            "w-full h-12 text-lg font-medium transition-all duration-300",
+            "bg-tiktok-pink hover:bg-tiktok-pink-dark text-white",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            "transform hover:scale-[1.02] active:scale-[0.98]"
+          )}
         >
           {selectedPack !== null ? (
             <>
