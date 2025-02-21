@@ -20,29 +20,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-tiktok-bg-light py-12 px-4">
-      <div className="max-w-md mx-auto space-y-8">
-        <div className="text-center space-y-3">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-tiktok-pink to-purple-500 text-transparent bg-clip-text">
-            TikTok Coin Recharge
-          </h1>
-          <p className="text-tiktok-text-secondary">Send coins to your favorite creators</p>
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-md mx-auto space-y-6">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">TikTok Coin Recharge</h1>
+          <p className="text-gray-500">Send coins to your favorite creators</p>
         </div>
 
         <SearchBar
           value={username}
           onChange={setUsername}
           onSubmit={handleSearch}
-          className="mb-8"
+          className="mb-6"
         />
 
         {showUser && username && (
-          <div className="animate-slideUp">
-            <UserCard
-              username={username}
-              onSelect={handleSelectUser}
-            />
-          </div>
+          <UserCard
+            username={username}
+            onSelect={handleSelectUser}
+          />
         )}
       </div>
     </div>
