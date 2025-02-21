@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check, LoaderCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CoinPackCard from '@/components/CoinPackCard';
 import { useToast } from '@/components/ui/use-toast';
@@ -20,21 +20,42 @@ const Recharge = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedPack, setSelectedPack] = useState<number | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handlePurchase = () => {
     if (selectedPack !== null) {
+      setIsProcessing(true);
       const pack = COIN_PACKS[selectedPack];
-      toast({
-        title: "Purchase Successful!",
-        description: `${pack.coins.toLocaleString()} coins have been sent to @${username}`,
-        duration: 3000,
-      });
-      setTimeout(() => navigate('/'), 3000);
+      
+      // Simulate payment processing
+      setTimeout(() => {
+        setIsProcessing(false);
+        toast({
+          title: "Purchase Successful! 🎉",
+          description: (
+            <div className="flex items-center gap-2">
+              <span>{pack.coins.toLocaleString()} coins have been sent to @{username}</span>
+              <Sparkles className="w-4 h-4 text-yellow-400 animate-pulse" />
+            </div>
+          ),
+          duration: 3000,
+        });
+        setTimeout(() => navigate('/'), 3000);
+      }, 2000);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
+      {isProcessing && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 animate-scaleIn">
+            <LoaderCircle className="w-12 h-12 text-tiktok-pink animate-spin" />
+            <p className="text-lg font-medium">Processing payment...</p>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-md mx-auto">
         <button
           onClick={() => navigate(-1)}
@@ -63,8 +84,8 @@ const Recharge = () => {
 
         <Button
           onClick={handlePurchase}
-          disabled={selectedPack === null}
-          className="w-full bg-tiktok-pink hover:bg-tiktok-pink/90 text-white h-12 text-lg"
+          disabled={selectedPack === null || isProcessing}
+          className="w-full bg-tiktok-pink hover:bg-tiktok-pink/90 text-white h-12 text-lg relative overflow-hidden transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
         >
           {selectedPack !== null ? (
             <>
