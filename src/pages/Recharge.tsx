@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CoinPackCard from '@/components/CoinPackCard';
 import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 
 const COIN_PACKS = [
   { coins: 70, price: 0.99 },
