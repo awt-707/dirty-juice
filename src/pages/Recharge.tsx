@@ -102,10 +102,16 @@ const Recharge = () => {
 
       {/* Payment Processing Modal */}
       {isProcessing && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <div className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 animate-scaleIn">
-            <LoaderCircle className="w-12 h-12 text-[#FE2C55] animate-spin" />
-            <p className="text-lg font-medium">Paiement sécurisé...</p>
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl w-[280px] p-8 flex flex-col items-center gap-6 shadow-2xl animate-scaleIn">
+            <div className="relative">
+              <div className="absolute inset-0 bg-[#FE2C55]/20 blur-xl rounded-full animate-pulse"></div>
+              <LoaderCircle className="w-16 h-16 text-[#FE2C55] animate-spin relative z-10" />
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-xl font-semibold">Paiement sécurisé</p>
+              <p className="text-gray-500 text-sm">Veuillez patienter...</p>
+            </div>
           </div>
         </div>
       )}
