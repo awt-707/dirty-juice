@@ -22,24 +22,18 @@ const Recharge = () => {
   const { toast } = useToast();
   const [selectedPack, setSelectedPack] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isPurchaseComplete, setIsPurchaseComplete] = useState(false);
   const [currentCoins, setCurrentCoins] = useState(0);
 
   const handlePurchase = () => {
     if (selectedPack !== null) {
       setIsProcessing(true);
       
+      // Simuler le processus de paiement
       setTimeout(() => {
         setIsProcessing(false);
+        setIsPurchaseComplete(true);
         setCurrentCoins(prev => prev + COIN_PACKS[selectedPack].coins);
-        toast({
-          title: "Achat terminé",
-          description: "Accéde à la page « Obtenir des Pièces » d'un seul geste du doigt",
-          action: (
-            <Button variant="outline" size="sm" onClick={() => {}}>
-              Ajouter à l'écran d'accueil
-            </Button>
-          ),
-        });
       }, 2000);
     }
   };
@@ -53,7 +47,7 @@ const Recharge = () => {
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-lg font-semibold">Recharger</h1>
-          <div className="w-6" /> {/* Spacer for alignment */}
+          <div className="w-6" />
         </div>
       </div>
 
@@ -102,7 +96,7 @@ const Recharge = () => {
 
       {/* Payment Processing Modal */}
       {isProcessing && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl w-[280px] p-8 flex flex-col items-center gap-6 shadow-2xl animate-scaleIn">
             <div className="relative">
               <div className="absolute inset-0 bg-[#FE2C55]/20 blur-xl rounded-full animate-pulse"></div>
@@ -112,6 +106,40 @@ const Recharge = () => {
               <p className="text-xl font-semibold">Paiement sécurisé</p>
               <p className="text-gray-500 text-sm">Veuillez patienter...</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Purchase Complete Modal */}
+      {isPurchaseComplete && (
+        <div className="fixed inset-0 bg-white z-50 animate-fadeIn">
+          <div className="flex flex-col items-center justify-center min-h-screen px-6">
+            <button onClick={() => navigate(-1)} className="absolute top-4 left-4">
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                <Check className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-xl font-semibold">Achat terminé</span>
+            </div>
+            <div className="w-32 h-32 bg-blue-50 rounded-2xl mb-6 flex items-center justify-center">
+              <div className="w-12 h-12 bg-black rounded-lg flex items-center justify-center">
+                <img src="/favicon.ico" alt="TikTok" className="w-8 h-8" />
+              </div>
+            </div>
+            <h2 className="text-xl font-bold mb-2 text-center">
+              Accéde à la page « Obtenir des Pièces » d'un seul geste du doigt
+            </h2>
+            <p className="text-gray-500 text-center mb-8">
+              Ajoutez cette page à votre écran d'accueil pour recharger facilement !
+            </p>
+            <Button 
+              className="w-full bg-[#FE2C55] hover:bg-[#FE2C55]/90 text-white h-12 rounded-lg"
+              onClick={() => setIsPurchaseComplete(false)}
+            >
+              Ajouter à l'écran d'accueil
+            </Button>
           </div>
         </div>
       )}
