@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Check, LoaderCircle, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -15,27 +16,43 @@ const COIN_PACKS = [
   { coins: 1120, price: 19.99 },
 ];
 
+const calculatePrice = (coins: number): number => {
+  const referenceRatio = COIN_PACKS.map(pack => pack.price / pack.coins);
+  const averageRatio = referenceRatio.reduce((a, b) => a + b) / referenceRatio.length;
+  return Number((coins * averageRatio).toFixed(2));
+};
+
 const Recharge = () => {
   const { username } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedPack, setSelectedPack] = useState<number | null>(null);
+  const [customCoins, setCustomCoins] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPurchaseComplete, setIsPurchaseComplete] = useState(false);
   const [currentCoins, setCurrentCoins] = useState(0);
 
+  const handleCustomCoinsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      setCustomCoins(value);
+      setSelectedPack(null);
+    }
+  };
+
   const handlePurchase = () => {
-    if (selectedPack !== null) {
+    const coinsToAdd = customCoins ? parseInt(customCoins) : (selectedPack !== null ? COIN_PACKS[selectedPack].coins : 0);
+    if (coinsToAdd > 0) {
       setIsProcessing(true);
-      
-      // Simuler le processus de paiement
       setTimeout(() => {
         setIsProcessing(false);
         setIsPurchaseComplete(true);
-        setCurrentCoins(prev => prev + COIN_PACKS[selectedPack].coins);
+        setCurrentCoins(prev => prev + coinsToAdd);
       }, 2000);
     }
   };
+
+  const calculatedPrice = customCoins ? calculatePrice(parseInt(customCoins)) : null;
 
   return (
     <div className="min-h-screen bg-white pb-20">
@@ -61,19 +78,43 @@ const Recharge = () => {
         </div>
       </div>
 
+      {/* Custom Coins Input */}
+      <div className="px-4 mb-6">
+        <div className="space-y-2">
+          <label htmlFor="customCoins" className="text-sm font-medium text-gray-700">
+            Nombre de pièces souhaité
+          </label>
+          <Input
+            id="customCoins"
+            type="text"
+            value={customCoins}
+            onChange={handleCustomCoinsChange}
+            placeholder="Entrez le nombre de pièces"
+            className="text-lg"
+          />
+          {customCoins && (
+            <p className="text-[#FE2C55] font-medium text-right">
+              Prix estimé : {calculatedPrice} €
+            </p>
+          )}
+        </div>
+      </div>
+
       {/* Coin Packs */}
       <div className="px-4">
         <div className="mb-4">
-          <h2 className="text-lg font-semibold mb-2">Échange</h2>
-          <p className="text-sm text-gray-500">Échanger les revenus des Cadeaux contre des Pièces</p>
-          <p className="text-xs text-gray-400">Des revenus des Cadeaux : $2.08 = €2.05(✨ 173)</p>
+          <h2 className="text-lg font-semibold mb-2">Packs disponibles</h2>
+          <p className="text-sm text-gray-500">Ou choisissez un pack prédéfini</p>
         </div>
 
         <div className="space-y-3">
           {COIN_PACKS.map((pack, index) => (
             <button
               key={index}
-              onClick={() => setSelectedPack(index)}
+              onClick={() => {
+                setSelectedPack(index);
+                setCustomCoins('');
+              }}
               className={cn(
                 "w-full flex items-center justify-between p-3 rounded-lg border transition-all",
                 selectedPack === index 
@@ -142,16 +183,16 @@ const Recharge = () => {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button
           onClick={handlePurchase}
-          disabled={selectedPack === null || isProcessing}
+          disabled={(!customCoins && selectedPack === null) || isProcessing}
           className="w-full bg-[#FE2C55] hover:bg-[#FE2C55]/90 text-white h-12"
         >
-          {selectedPack !== null ? (
+          {customCoins || selectedPack !== null ? (
             <>
               <CreditCard className="w-5 h-5 mr-2" />
-              Payer {COIN_PACKS[selectedPack].price.toFixed(2)} €
+              Payer {customCoins ? calculatedPrice : COIN_PACKS[selectedPack!].price.toFixed(2)} €
             </>
           ) : (
-            'Sélectionner un pack'
+            'Sélectionner un montant'
           )}
         </Button>
       </div>
