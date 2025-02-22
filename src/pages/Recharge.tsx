@@ -31,6 +31,7 @@ const Recharge = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPurchaseComplete, setIsPurchaseComplete] = useState(false);
   const [currentCoins, setCurrentCoins] = useState(0);
+  const [lastPurchasedCoins, setLastPurchasedCoins] = useState(0);
 
   const handleCustomCoinsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -44,6 +45,7 @@ const Recharge = () => {
     const coinsToAdd = customCoins ? parseInt(customCoins) : (selectedPack !== null ? COIN_PACKS[selectedPack].coins : 0);
     if (coinsToAdd > 0) {
       setIsProcessing(true);
+      setLastPurchasedCoins(coinsToAdd);
       setTimeout(() => {
         setIsProcessing(false);
         setIsPurchaseComplete(true);
@@ -159,7 +161,7 @@ const Recharge = () => {
             </h2>
 
             <p className="text-gray-600 text-center mb-12">
-              Tu as rechargé 20000 Pièces. Pour profiter d'un accès rapide au rechargement la prochaine fois, ajoute <span className="text-gray-900">tiktok.com/coin</span> à ton écran d'accueil.
+              Tu as rechargé {lastPurchasedCoins} Pièces. Pour profiter d'un accès rapide au rechargement la prochaine fois, ajoute <span className="text-gray-900">tiktok.com/coin</span> à ton écran d'accueil.
             </p>
 
             <Button 
