@@ -2,21 +2,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '@/components/SearchBar';
-import UserCard from '@/components/UserCard';
 
 const Index = () => {
   const [username, setUsername] = useState('');
-  const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = () => {
     if (username.trim()) {
-      setShowUser(true);
+      navigate(`/recharge/${encodeURIComponent(username)}`);
     }
-  };
-
-  const handleSelectUser = () => {
-    navigate(`/recharge/${encodeURIComponent(username)}`);
   };
 
   return (
@@ -33,13 +27,6 @@ const Index = () => {
           onSubmit={handleSearch}
           className="mb-6"
         />
-
-        {showUser && username && (
-          <UserCard
-            username={username}
-            onSelect={handleSelectUser}
-          />
-        )}
       </div>
     </div>
   );
